@@ -1,14 +1,13 @@
 ---
 - name: Install letsencrypt
   apt: pkg=letsencrypt state=installed
-  tags:
-    - dependencies
-    
+
 - name: Generate letsencrypt certificates
-  command: /usr/bin/letsencrypt certonly --standalone --standalone-supported-challenges {{letsencrypt_challenge}} --non-interactive --agree-tos --email {{letsencrypt_email}} --domains {{letsencrypt_domains|join(',')}} creates=/etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/privkey.pem
+  command: /usr/bin/letsencrypt certonly --standalone --standalone-supported-challenges {{ letsencrypt_challenge }} --non-interactive --agree-tos --email {{ letsencrypt_email }} --domains {{ letsencrypt_domains|join(',') }} creates=/etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/privkey.pem
+  when: letsencrypt_domains | int > 0
 
 - name: Copy letsencrypt renew script
-  copy: src=etc_letsencrypt_renew.sh dest=/etc/letsencrypt/renew.sh owner=root group=root mode=0755
-  
+  template: src=etc/letsencrypt/renew.sh.js dest=/etc/letsencrypt/renew.sh owner=root group=root mode=0755
+
 - name: Add crontab to renew certificates
   cron: name="letsencrypt renew" minute="0" hour="6,16" job="/etc/letsencrypt/renew.sh  > /dev/null" user="root"
