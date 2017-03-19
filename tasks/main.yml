@@ -7,7 +7,7 @@
   when: letsencrypt_domains | int > 0
 
 - name: Copy letsencrypt renew script
-  template: src=etc/letsencrypt/renew.sh.js dest=/etc/letsencrypt/renew.sh owner=root group=root mode=0755
+  template: src=etc/letsencrypt/renew.sh.j2 dest=/etc/letsencrypt/renew.sh owner=root group=root mode=0755
 
 - name: Add crontab to renew certificates
   cron: name="letsencrypt renew" minute="0" hour="6,16" job="/etc/letsencrypt/renew.sh  > /dev/null" user="root"
