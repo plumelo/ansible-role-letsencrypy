@@ -1,0 +1,5 @@
+#!/bin/bash
+/usr/bin/letsencrypt renew
+{% for action in letsencrypt_cron_actions %}
+ {{ action }}
+{% endfor %}

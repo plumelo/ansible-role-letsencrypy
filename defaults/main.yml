@@ -1,0 +1,7 @@
+---
+#letsencrypt
+letsencrypt_email: ""
+letsencrypt_domains: []
+letsencrypt_cron: True
+letsencrypt_cron_actions: []
+letsencrypt_challenge: 'tls-sni-01'
