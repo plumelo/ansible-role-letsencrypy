@@ -10,4 +10,4 @@
   template: src=etc/letsencrypt/renew.sh.j2 dest=/etc/letsencrypt/renew.sh owner=root group=root mode=0755
 
 - name: Add crontab to renew certificates
-  cron: name="letsencrypt renew" minute="0" hour="6,16" job="/etc/letsencrypt/renew.sh  > /dev/null" user="root"
+  cron: name="letsencrypt renew" minute="0" hour="6,16" job="/etc/letsencrypt/renew.sh  > /dev/null" user="root" state="{{ letsencrypt_cron|ternary('present', 'absent') }}"
