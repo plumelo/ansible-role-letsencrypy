@@ -4,7 +4,7 @@
 
 - name: Generate letsencrypt certificates
   command: /usr/bin/letsencrypt certonly --standalone --standalone-supported-challenges {{ letsencrypt_challenge }} --non-interactive --agree-tos --email {{ letsencrypt_email }} --domains {{ letsencrypt_domains|join(',') }} creates=/etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/privkey.pem
-  when: letsencrypt_domains | int > 0
+  when: letsencrypt_domains | length > 0
 
 - name: Copy letsencrypt renew script
   template: src=etc/letsencrypt/renew.sh.j2 dest=/etc/letsencrypt/renew.sh owner=root group=root mode=0755
