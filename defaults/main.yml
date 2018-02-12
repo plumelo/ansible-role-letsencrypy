@@ -1,6 +1,10 @@
 ---
+
 letsencrypt_email: ""
 letsencrypt_domains: []
 letsencrypt_cron: True
 letsencrypt_cron_actions: []
-letsencrypt_challenge: 'tls-sni-01'
+letsencrypt_challenge: 'http-01'
+letsencrypt_renew_services: []
+letsencrypt_before: []
+letsencrypt_after: []
