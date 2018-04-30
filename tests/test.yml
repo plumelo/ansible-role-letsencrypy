@@ -1,12 +1,8 @@
 ---
 
 - hosts: all
-  become: 'yes'
+  become: true
   roles:
     - role: plumelo.letsencrypt
-      letsencrypt_before:
-        - 'echo "before1" >> /root/before1.test'
-        - 'echo "before2" >> /root/before2.test'
-      letsencrypt_after:
-        - 'echo "after1" >> /root/after1.test'
-        - 'echo "after2" >> /root/after2.test'
+      letsencrypt_pre_hook: "service nginx stop"
+      letsencrypt_post_hook: "service nginx start"
