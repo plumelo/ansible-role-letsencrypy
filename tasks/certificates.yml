@@ -1,36 +1,26 @@
 ---
 
-- name: Letsencript before action
-  shell: name='{{ item }}'
-  with_items:
-    - '{{ letsencrypt_before }}'
-
-- name: Stop renew services
-  service: name='{{ item }}' state=stopped
-  with_items:
-    - '{{ letsencrypt_renew_services }}'
+- name: Create certficates directory
+  file:
+    path: /etc/letsencrypt/live
+    state: directory
+    mode: 0600
 
 - name: Generate letsencrypt certificates
-  shell: certbot {{ letsencrypt_args }} --domains {{ item }} && echo "tst" > /etc/letsencrypt/live/{{ item }} &>/dev/null
+  shell: certbot {{ letsencrypt_args }} --domains {{ item }} --pre-hook '{{ letsencrypt_pre_hook }}' --post-hook '{{ letsencrypt_post_hook }}'; echo "tst" > /etc/letsencrypt/live/{{ item }}
   args:
     creates: /etc/letsencrypt/live/{{ item }}/privkey.pem
   with_items: '{{ letsencrypt_domains }}'
   register: certificates_status
 
-- debug: var=certificates_status
-
-- name: Start renew services
-  service: name='{{ item }}' state=started
-  with_items:
-    - '{{ letsencrypt_renew_services }}'
-
-- name: Letsencript after action
-  shell: name='{{ item }}'
-  with_items:
-    - '{{ letsencrypt_after }}'
-
-- name: Copy letsencrypt renew script
-  template: src=etc/letsencrypt/renew.sh.j2 dest=/etc/letsencrypt/renew.sh owner=root group=root mode=0755
+- debug:
+    var: certificates_status
 
 - name: Add crontab to renew certificates
-  cron: name="letsencrypt renew" minute="0" hour="6,16" job="/etc/letsencrypt/renew.sh  > /dev/null" user="root" state="{{ letsencrypt_cron|ternary('present', 'absent') }}"
+  cron:
+    name: "letsencrypt renew"
+    minute: "*"
+    hour: "*"
+    job: "/etc/letsencrypt/renew.sh  > /dev/null"
+    user: "root"
+    state: "{{ letsencrypt_cron|ternary('present', 'absent') }}"
