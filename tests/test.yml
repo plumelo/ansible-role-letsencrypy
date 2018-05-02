@@ -6,3 +6,5 @@
     - role: plumelo.letsencrypt
       letsencrypt_pre_hook: "service nginx stop"
       letsencrypt_post_hook: "service nginx start"
+      letsencrypt_renew_pre_hook: "service nginx start"
+      letsencrypt_renew_post_hook: "service nginx stop"
