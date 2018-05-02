@@ -2,12 +2,13 @@
 
 letsencrypt_email: example.com
 letsencrypt_domains: www.test.com
-letsencrypt_args: 'certonly --standalone --agree-tos --no-eff-email --email {{ letsencrypt_email }}'
-letsencrypt_cron: true
-letsencrypt_cron_actions: []
-letsencrypt_challenge: 'http-01'
-letsencrypt_renew_services: []
-letsencrypt_before: []
-letsencrypt_after: []
 letsencrypt_pre_hook: []
 letsencrypt_post_hook: []
+letsencrypt_args: 'certonly --standalone --preferred-challenges {{ letsencrypt_preffered_challenges }} --agree-tos --no-eff-email --email {{ letsencrypt_email }}'
+letsencrypt_preffered_challenges: 'http'
+letsencrypt_cron: true
+letsencrypt_cron_actions: []
+letsencrypt_renew_pre_hook: []
+letsencrypt_renew_post_hook: []
+
+letsencrypt_services:
