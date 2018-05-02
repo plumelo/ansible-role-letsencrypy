@@ -16,11 +16,11 @@
 - debug:
     var: certificates_status
 
-- name: Add crontab to renew certificates
+- name: Renew certificates crontab
   cron:
     name: "letsencrypt renew"
-    minute: "*"
-    hour: "*"
-    job: "/etc/letsencrypt/renew.sh  > /dev/null"
+    minute: "0"
+    hour: "6,16"
+    job: certbot renew --pre-hook '{{ letsencrypt_renew_pre_hook }}' --post-hook '{{ letsencrypt_renew_post_hook }}'
     user: "root"
     state: "{{ letsencrypt_cron|ternary('present', 'absent') }}"
