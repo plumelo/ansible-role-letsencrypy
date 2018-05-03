@@ -4,7 +4,20 @@
   become: true
   roles:
     - role: plumelo.letsencrypt
-      letsencrypt_pre_hook: "service nginx stop"
-      letsencrypt_post_hook: "service nginx start"
-      letsencrypt_renew_pre_hook: "service nginx start"
-      letsencrypt_renew_post_hook: "service nginx stop"
+      letsencrypt_services:
+        - "nginx"
+        - "mysql"
+      letsencrypt_pre_hooks:
+        - "cat a"
+        - "cat b"
+      letsencrypt_email: user@yahoo.com
+      letsencrypt_domains:
+        - www.example.com
+      letsencrypt_renew_post_hooks:
+        - "ls -al"
+        - "ls -la"
+      letsencrypt_renew_cron:
+        - name: "letsencript cronjob"
+          minute: "0"
+          hour: "0"
+          state: "present"
