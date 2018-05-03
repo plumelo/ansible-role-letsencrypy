@@ -7,7 +7,7 @@
     mode: 0600
 
 - name: Generate letsencrypt certificates
-  shell: certbot {{ letsencrypt_args }} --domains {{ item }} --pre-hook '{{ letsencrypt_pre_hook }}' --post-hook '{{ letsencrypt_post_hook }}'; echo "tst" > /etc/letsencrypt/live/{{ item }}
+  shell: certbot {{ letsencrypt_args }} --domains {{ item }} --pre-hook "{{ _letsencrypt_pre_hooks | join(';') }}" --post-hook "{{ _letsencrypt_post_hooks | join(';') }}"; echo "tst" > /etc/letsencrypt/live/{{ item }}
   args:
     creates: /etc/letsencrypt/live/{{ item }}/privkey.pem
   with_items: '{{ letsencrypt_domains }}'
@@ -18,9 +18,9 @@
 
 - name: Renew certificates crontab
   cron:
-    name: "letsencrypt renew"
-    minute: "0"
-    hour: "6,16"
-    job: certbot renew --pre-hook '{{ letsencrypt_renew_pre_hook }}' --post-hook '{{ letsencrypt_renew_post_hook }}'
-    user: "root"
-    state: "{{ letsencrypt_cron|ternary('present', 'absent') }}"
+    name: '{{ item.name | default(item) }}'
+    minute: '{{ item.minute | default(omit) }}'
+    hour: '{{ item.hour | default(omit) }}'
+    job: certbot renew --pre-hook "{{ _letsencrypt_renew_pre_hooks | join(';') }}" --post-hook "{{ _letsencrypt_renew_post_hooks | join(';') }}"
+    state: "{{ item.state | default(false) | ternary('present', 'absent') }}"
+  with_items: '{{ letsencrypt_renew_cron }}'
