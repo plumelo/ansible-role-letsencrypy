@@ -13,9 +13,6 @@
   with_items: '{{ letsencrypt_domains }}'
   register: certificates_status
 
-- debug:
-    var: certificates_status
-
 - name: Renew certificates crontab
   cron:
     name: '{{ item.name | default(item) }}'
