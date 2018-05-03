@@ -1,14 +1,26 @@
 ---
 
-letsencrypt_email: example.com
-letsencrypt_domains: www.test.com
-letsencrypt_pre_hook: []
-letsencrypt_post_hook: []
-letsencrypt_args: 'certonly --standalone --preferred-challenges {{ letsencrypt_preffered_challenges }} --agree-tos --no-eff-email --email {{ letsencrypt_email }}'
+letsencrypt_email: []
+letsencrypt_domains: []
 letsencrypt_preffered_challenges: 'http'
-letsencrypt_cron: true
-letsencrypt_cron_actions: []
-letsencrypt_renew_pre_hook: []
-letsencrypt_renew_post_hook: []
 
-letsencrypt_services:
+letsencrypt_renew_cron: []
+letsencrypt_services: []
+
+_letsencrypt_services_pre_hooks: "{{ letsencrypt_services| map('regex_replace', '(.*)', 'service \\1 stop')| list }}"
+_letsencrypt_services_post_hooks: "{{ letsencrypt_services| map('regex_replace', '(.*)', 'service \\1 start')| list }}"
+
+letsencrypt_pre_hooks: []
+letsencrypt_post_hooks: []
+
+_letsencrypt_pre_hooks: "{{ _letsencrypt_services_pre_hooks + letsencrypt_pre_hooks }}"
+_letsencrypt_post_hooks: "{{ _letsencrypt_services_post_hooks + letsencrypt_post_hooks }}"
+
+letsencrypt_args: 'certonly --standalone --preferred-challenges {{ letsencrypt_preffered_challenges }} --agree-tos --no-eff-email --email {{ letsencrypt_email }}'
+
+
+letsencrypt_renew_pre_hooks: []
+letsencrypt_renew_post_hooks: []
+
+_letsencrypt_renew_pre_hooks: "{{ _letsencrypt_services_pre_hooks + letsencrypt_renew_pre_hooks }}"
+_letsencrypt_renew_post_hooks: "{{ _letsencrypt_services_post_hooks + letsencrypt_renew_post_hooks }}"
