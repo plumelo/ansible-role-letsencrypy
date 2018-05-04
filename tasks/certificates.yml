@@ -14,10 +14,4 @@
   register: certificates_status
 
 - name: Renew certificates crontab
-  cron:
-    name: '{{ item.name | default(item) }}'
-    minute: '{{ item.minute | default(omit) }}'
-    hour: '{{ item.hour | default(omit) }}'
-    job: certbot renew --pre-hook "{{ _letsencrypt_renew_pre_hooks | join(';') }}" --post-hook "{{ _letsencrypt_renew_post_hooks | join(';') }}"
-    state: "{{ item.state | default(false) | ternary('present', 'absent') }}"
-  with_items: '{{ letsencrypt_renew_cron }}'
+  cron: '{{ _letsencrypt_renew_cron_options }}'

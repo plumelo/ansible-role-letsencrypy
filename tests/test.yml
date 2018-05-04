@@ -16,8 +16,6 @@
       letsencrypt_renew_post_hooks:
         - "ls -al"
         - "ls -la"
-      letsencrypt_renew_cron:
-        - name: "letsencript cronjob"
-          minute: "0"
-          hour: "0"
-          state: "present"
+      letsencrypt_renew_cron: false
+      letsencrypt_renew_cron_options:
+        hour: '0, 19'

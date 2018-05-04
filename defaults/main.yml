@@ -4,7 +4,7 @@ letsencrypt_email: []
 letsencrypt_domains: []
 letsencrypt_preffered_challenges: 'http'
 
-letsencrypt_renew_cron: []
+
 letsencrypt_services: []
 
 _letsencrypt_services_pre_hooks: "{{ letsencrypt_services| map('regex_replace', '(.*)', 'service \\1 stop')| list }}"
@@ -24,3 +24,14 @@ letsencrypt_renew_post_hooks: []
 
 _letsencrypt_renew_pre_hooks: "{{ _letsencrypt_services_pre_hooks + letsencrypt_renew_pre_hooks }}"
 _letsencrypt_renew_post_hooks: "{{ _letsencrypt_services_post_hooks + letsencrypt_renew_post_hooks }}"
+
+letsencrypt_renew_cron: true
+letsencrypt_renew_cron_defaults:
+    name: 'letsencrypt'
+    minute: '0'
+    hour: '0'
+    job: certbot renew --pre-hook "{{ _letsencrypt_renew_pre_hooks | join(';') }}" --post-hook "{{ _letsencrypt_renew_post_hooks | join(';') }}"
+    state: "{{ letsencrypt_renew_cron | ternary('present', 'absent') }}"
+
+letsencrypt_renew_cron_options: {}
+_letsencrypt_renew_cron_options: '{{ letsencrypt_renew_cron_defaults | combine(letsencrypt_renew_cron_options) }}'
