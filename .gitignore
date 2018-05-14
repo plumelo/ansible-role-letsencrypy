@@ -2,3 +2,4 @@
 .DS_Store
 .vagrant
 tests/roles/*
+!tests/roles/plumelo.letsencrypt
